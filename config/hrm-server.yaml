@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hrm-server
+  namespace: hrm
+  labels:
+    app.kubernetes.io/name: hrm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hrm
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hrm
+    spec:
+      imagePullSecrets:
+      - name: spectro-common-dev-image-pull-secret
+      containers:
+      - name: hrm
+        image: gcr.io/spectro-common-dev/tylergillson/spectro-zen-of-kubernetes:latest
+        ports:
+        - containerPort: 8081
+        volumeMounts:
+          - mountPath: /var/run/dbus
+            name: dbus
+      volumes:
+        - name: dbus
+          hostPath:
+            path: /var/run/dbus
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: hrm
+  name: heart-rate-server
+spec:
+  type: ClusterIP
+  ports:
+    - name: hrm
+      port: 8081
+      targetPort: 8081
+      protocol: TCP
+  selector:
+    app.kubernetes.io/name: hrm
