@@ -1,11 +1,76 @@
 import { React, useState } from 'react'
 import { trackPromise, usePromiseTracker } from 'react-promise-tracker'
 import { ThreeDots } from 'react-loader-spinner'
-
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js'
+import { Line } from 'react-chartjs-2'
 import './App.css'
 import spectroLogo from './assets/logo_landscape_for_dark.png'
 
 const API_URL = import.meta.env.VITE_API_BASE_URL
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+)
+
+export const chartOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      display: true,
+      position: 'bottom',
+      labels: {
+        boxWidth: 30,
+        boxHeight: 15,
+        color: 'rgb(73, 131, 212)',
+        font: {
+          size: 16,
+          weight: 'bold'
+        }
+      }
+    }
+  },
+  scales: {
+    x: {
+      display: false
+    },
+    y: {
+      display: true,
+      beginAtZero: false,
+      ticks: {
+        stepSize: 1,
+        color: 'rgb(255, 0, 50)',
+        font: {
+          size: 16,
+          weight: 'bold'
+        }
+      },
+      min: 40,
+      max: 200
+    }
+  },
+  title: {
+    display: true,
+    text: 'Heart Rate'
+  }
+}
+
+let baselineIntervalId
+let challengeIntervalId
 
 function App () {
   const [baseline, setBaseline] = useState(0)
@@ -13,6 +78,31 @@ function App () {
   const [delta, setDelta] = useState(0)
   const [max, setMax] = useState(0)
   const [result, setResult] = useState({ message: '', error: '' })
+  const [dataBaseline, setDataBaseline] = useState([])
+  const [dataChallenge, setDataChallenge] = useState([])
+
+  const baselineChartData = {
+    labels: getLabels(),
+    datasets: [
+      {
+        label: 'Baseline',
+        data: dataBaseline,
+        borderColor: 'rgb(73, 131, 212)',
+        backgroundColor: 'rgb(73, 131, 212)'
+      },
+      {
+        label: 'Challenge',
+        data: dataChallenge,
+        borderColor: 'rgb(255, 0, 50)',
+        backgroundColor: 'rgb(255, 0, 50)'
+      }
+    ]
+  }
+
+  function getLabels () {
+    const len = Math.max(dataBaseline.length, dataChallenge.length)
+    return Array.from(Array(len).keys())
+  }
 
   return (
     <div className="App">
@@ -50,6 +140,9 @@ function App () {
       </div>
       <div className="error">
         <Error/>
+      </div>
+      <div>
+        <Line options={chartOptions} data={baselineChartData} />
       </div>
       <div className="card">
         <button onClick={connect}>
@@ -104,6 +197,18 @@ function App () {
     setBaseline(0)
     setMax(0)
     setDelta(0)
+    disableBaselineInterval()
+    disableChallengeInterval()
+    setDataBaseline([])
+    setDataChallenge([])
+  }
+
+  function disableBaselineInterval () {
+    clearInterval(baselineIntervalId)
+  }
+
+  function disableChallengeInterval () {
+    clearInterval(challengeIntervalId)
   }
 
   function connect () {
@@ -116,7 +221,9 @@ function App () {
   }
 
   function getBaseline () {
+    baselineIntervalId = setInterval(() => getHeartRateDataBaseline(), 1000)
     setResult({ message: '', error: '' })
+
     trackPromise(
       fetch(API_URL + '/baseline')
         .then(result => result.json())
@@ -130,7 +237,10 @@ function App () {
   }
 
   function startChallenge () {
+    disableBaselineInterval()
+    challengeIntervalId = setInterval(() => getHeartRateDataChallenge(), 1000)
     setResult({ message: '', error: '' })
+
     trackPromise(
       fetch(API_URL + '/challenge')
         .then(result => result.json())
@@ -145,6 +255,8 @@ function App () {
 
   function disconnect () {
     setRecording(false)
+    disableChallengeInterval()
+
     trackPromise(
       fetch(API_URL + '/disconnect')
         .then(result => result.json())
@@ -155,6 +267,26 @@ function App () {
           setResult({ error: d.error })
         })
     )
+  }
+
+  function getHeartRateDataBaseline () {
+    fetch(API_URL + '/heart-rate-data-baseline')
+      .then(result => result.json())
+      .then(d => {
+        if (d) {
+          setDataBaseline(d)
+        }
+      })
+  }
+
+  function getHeartRateDataChallenge () {
+    fetch(API_URL + '/heart-rate-data-challenge')
+      .then(result => result.json())
+      .then(d => {
+        if (d) {
+          setDataChallenge(d)
+        }
+      })
   }
 }
 

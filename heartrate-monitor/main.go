@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/go-logr/logr"
@@ -24,7 +25,7 @@ var (
 	heartRateCharacteristic                *bluetooth.DeviceCharacteristic
 	deviceAddress                          string
 	baseline, baselineCount, delta, max    int
-	baselineValues, challengeValues        []uint8
+	baselineValues, challengeValues        HeartRateSlice
 	recording                              = make(chan bool, 1)
 	baselineEstablished, isChallengeActive bool
 
@@ -36,6 +37,18 @@ var (
 const (
 	alreadyConnected = "failed to connect... you must disconnect first"
 )
+
+type HeartRateSlice []uint8
+
+func (h HeartRateSlice) MarshalJSON() ([]byte, error) {
+	var result string
+	if h == nil {
+		result = "null"
+	} else {
+		result = strings.Join(strings.Fields(fmt.Sprintf("%d", h)), ",")
+	}
+	return []byte(result), nil
+}
 
 type Response struct {
 	Message  string `json:"message"`
@@ -139,13 +152,27 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/heart-rate-data-baseline", func(w http.ResponseWriter, r *http.Request) {
+		setHeaders(&w)
+		if err := json.NewEncoder(w).Encode(baselineValues); err != nil {
+			panic(err)
+		}
+	})
+
+	http.HandleFunc("/heart-rate-data-challenge", func(w http.ResponseWriter, r *http.Request) {
+		setHeaders(&w)
+		if err := json.NewEncoder(w).Encode(challengeValues); err != nil {
+			panic(err)
+		}
+	})
+
 	log.V(0).Info("Listening on 127.0.0.1:8081...")
 	_ = http.ListenAndServe(":8081", nil)
 }
 
 func reset() {
 	baseline, baselineCount, delta, max = 0, 0, 0, 0
-	baselineValues, challengeValues = make([]uint8, 0), make([]uint8, 0)
+	baselineValues, challengeValues = make(HeartRateSlice, 0), make(HeartRateSlice, 0)
 	baselineEstablished, isChallengeActive = false, false
 }
 
