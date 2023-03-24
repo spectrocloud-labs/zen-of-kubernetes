@@ -59,8 +59,8 @@ export const chartOptions = {
           weight: 'bold'
         }
       },
-      min: 40,
-      max: 200
+      min: 60,
+      max: 170
     }
   },
   title: {
