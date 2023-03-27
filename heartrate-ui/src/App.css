@@ -32,8 +32,8 @@
 }
 
 .card {
-  padding: 2em;
-  margin-bottom: 60%;
+  padding: 0em;
+  /* margin-bottom: 60%; */
 }
 
 .card button {
@@ -80,4 +80,21 @@ td {
 #recording {
   color: #4983d4;
   font-weight: bold
+}
+
+#line {
+  max-height: 50%;
+  margin-left: 25%;
+  margin-bottom: 2%;
+}
+
+.pii {
+  margin-bottom: 60%;
+  max-width: 100%;
+  padding: 2em;
+  text-align: center;
+}
+
+.pii bold {
+  font-weight: bold;
 }

@@ -141,7 +141,7 @@ function App () {
       <div className="error">
         <Error/>
       </div>
-      <div>
+      <div id="line">
         <Line options={chartOptions} data={baselineChartData} />
       </div>
       <div className="card">
@@ -158,6 +158,7 @@ function App () {
           Finish
         </button>
       </div>
+      <p className="pii"><bold>Disclaimer:</bold> Heart rate data is wiped each time the Finish button is clicked. No PII is persisted. Your name and delta will be recorded for the purposes of the prize draw and this information will be destroyed once a winner has been determined.</p>
     </div>
   )
 
