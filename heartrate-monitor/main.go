@@ -25,6 +25,7 @@ var (
 	heartRateCharacteristic                *bluetooth.DeviceCharacteristic
 	deviceAddress                          string
 	baseline, baselineCount, delta, max    int
+	baselineSeconds                        int64
 	baselineValues, challengeValues        HeartRateSlice
 	recording                              = make(chan bool, 1)
 	baselineEstablished, isChallengeActive bool
@@ -77,10 +78,20 @@ func init() {
 	} else {
 		level = zerolog.InfoLevel
 	}
-
 	zl := zerolog.New(os.Stderr).Level(level)
 	log = zerologr.New(&zl)
 	log.V(0).Info("hrm", "address", deviceAddress, "logLevel", level)
+
+	baselineSecondsStr := os.Getenv("BASELINE_SECONDS")
+	if baselineSecondsStr == "" {
+		baselineSeconds = 5
+	} else {
+		var err error
+		baselineSeconds, err = strconv.ParseInt(baselineSecondsStr, 10, 64)
+		if err != nil {
+			panic(err)
+		}
+	}
 }
 
 func main() {
@@ -174,6 +185,7 @@ func reset() {
 	baseline, baselineCount, delta, max = 0, 0, 0, 0
 	baselineValues, challengeValues = make(HeartRateSlice, 0), make(HeartRateSlice, 0)
 	baselineEstablished, isChallengeActive = false, false
+	log.V(0).Info("reset all data")
 }
 
 func setHeaders(w *http.ResponseWriter) {
@@ -259,8 +271,7 @@ func recordBaseline() error {
 
 	// establish baseline
 	log.V(0).Info("establishing baseline heart rate")
-	//baselineTimer := time.NewTimer(30 * time.Second)
-	baselineTimer := time.NewTimer(5 * time.Second)
+	baselineTimer := time.NewTimer(time.Duration(baselineSeconds) * time.Second)
 	<-baselineTimer.C
 
 	var sum int

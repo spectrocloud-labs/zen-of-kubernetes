@@ -15,8 +15,6 @@ import { Line } from 'react-chartjs-2'
 import './App.css'
 import spectroLogo from './assets/logo_landscape_for_dark.png'
 
-const API_URL = window.VITE_API_BASE_URL
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -29,6 +27,7 @@ ChartJS.register(
 
 export const chartOptions = {
   responsive: true,
+  maintainAspectRatio: false,
   plugins: {
     legend: {
       display: true,
@@ -110,7 +109,7 @@ function App () {
         <a href="https://spectrocloud.com" target="_blank" rel="noreferrer">
           <img src={spectroLogo} className="logo" alt="Spectro logo"/>
         </a>
-        <h1>Zen of Kubernetes</h1>
+        <h1 className="title">Zen of Kubernetes</h1>
         <h2 className="spectro">Heart Rate Challenge</h2>
       </div>
       <div className="hrm">
@@ -141,7 +140,7 @@ function App () {
       <div className="error">
         <Error/>
       </div>
-      <div id="line">
+      <div className="line">
         <Line options={chartOptions} data={baselineChartData} />
       </div>
       <div className="card">
@@ -215,18 +214,18 @@ function App () {
   function connect () {
     reset()
     trackPromise(
-      fetch(API_URL + '/connect')
+      fetch(window.VITE_API_BASE_URL + '/connect')
         .then(result => result.json())
         .then(d => setResult(d))
     )
   }
 
   function getBaseline () {
-    baselineIntervalId = setInterval(() => getHeartRateDataBaseline(), 1000)
+    baselineIntervalId = setInterval(() => getHeartRateDataBaseline(), window.REFRESH_INTERVAL_MS)
     setResult({ message: '', error: '' })
 
     trackPromise(
-      fetch(API_URL + '/baseline')
+      fetch(window.VITE_API_BASE_URL + '/baseline')
         .then(result => result.json())
         .then(d => {
           setBaseline(d.baseline)
@@ -239,11 +238,11 @@ function App () {
 
   function startChallenge () {
     disableBaselineInterval()
-    challengeIntervalId = setInterval(() => getHeartRateDataChallenge(), 1000)
+    challengeIntervalId = setInterval(() => getHeartRateDataChallenge(), window.REFRESH_INTERVAL_MS)
     setResult({ message: '', error: '' })
 
     trackPromise(
-      fetch(API_URL + '/challenge')
+      fetch(window.VITE_API_BASE_URL + '/challenge')
         .then(result => result.json())
         .then(d => {
           setResult({ error: d.error })
@@ -259,7 +258,7 @@ function App () {
     disableChallengeInterval()
 
     trackPromise(
-      fetch(API_URL + '/disconnect')
+      fetch(window.VITE_API_BASE_URL + '/disconnect')
         .then(result => result.json())
         .then(d => {
           setBaseline(d.baseline)
@@ -271,7 +270,7 @@ function App () {
   }
 
   function getHeartRateDataBaseline () {
-    fetch(API_URL + '/heart-rate-data-baseline')
+    fetch(window.VITE_API_BASE_URL + '/heart-rate-data-baseline')
       .then(result => result.json())
       .then(d => {
         if (d) {
@@ -281,7 +280,7 @@ function App () {
   }
 
   function getHeartRateDataChallenge () {
-    fetch(API_URL + '/heart-rate-data-challenge')
+    fetch(window.VITE_API_BASE_URL + '/heart-rate-data-challenge')
       .then(result => result.json())
       .then(d => {
         if (d) {
