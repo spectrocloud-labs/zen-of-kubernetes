@@ -29,6 +29,7 @@ var (
 	baselineValues, challengeValues        HeartRateSlice
 	recording                              = make(chan bool, 1)
 	baselineEstablished, isChallengeActive bool
+	lastEvent                              time.Time
 
 	adapter                     = bluetooth.DefaultAdapter
 	heartRateServiceUUID        = bluetooth.ServiceUUIDHeartRate
@@ -37,6 +38,7 @@ var (
 
 const (
 	alreadyConnected = "failed to connect... you must disconnect first"
+	sampleRate       = 1 * time.Second
 )
 
 type HeartRateSlice []uint8
@@ -332,6 +334,13 @@ func disconnect() error {
 
 func heartRateCallback(buf []byte) {
 	v := uint8(buf[1])
+	// when using BLE, there's no need to throttle the sensor events,
+	// but they come in too hot on the NUC, which uses Bluetooth v2.2
+	if time.Since(lastEvent) < sampleRate {
+		log.V(0).Info("disregarding data point", "heartRate", v)
+		return
+	}
+	lastEvent = time.Now()
 	if v == 0 {
 		log.V(1).Info("sensor initializing", "heartRate", v)
 		return
