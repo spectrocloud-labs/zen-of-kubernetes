@@ -5,15 +5,15 @@
 
 PROJECT ?= "spectro-common-dev"
 IMG_TAG ?= "latest"
-HRM_IMG ?= "gcr.io/${PROJECT}/${USER}/spectro-zen-of-kubernetes:${IMG_TAG}"
-UI_IMG ?= "gcr.io/${PROJECT}/${USER}/spectro-zen-of-kubernetes-ui:${IMG_TAG}"
+HRM_IMG ?= "gcr.io/$(PROJECT)/$(USER)/spectro-zen-of-kubernetes:$(IMG_TAG)"
+UI_IMG ?= "gcr.io/$(PROJECT)/$(USER)/spectro-zen-of-kubernetes-ui:$(IMG_TAG)"
 
 GOOS ?= $(shell go env GOOS)
 GOARCH ?= $(shell go env GOARCH)
 GOPATH ?= $(shell go env GOPATH)
 
 BIN_DIR ?= ./bin
-TARGETARCH ?= amd64
+# bluez: DEVICE_ADDRESS ?= D9:4B:72:74:A3:D4
 DEVICE_ADDRESS ?= 48a44b18-555a-e689-8140-f16dc6fdd3d6
 
 GOLANGCI_VERSION ?= 1.50.1
@@ -29,10 +29,10 @@ help:  ## Display this help
 build: build-hrm build-scanner ## Build all
 
 build-hrm: ## Build heart rate monitor
-	go build -o $(BIN_DIR)/hrm heartrate-monitor/main.go
+	GOOS=$(GOOS) GOARCH=$(GOARCH) go build -o $(BIN_DIR)/hrm heartrate-monitor/main.go
 
 build-scanner: ## Build scanner
-	go build -o $(BIN_DIR)/scan scanner/main.go
+	GOOS=$(GOOS) GOARCH=$(GOARCH) go build -o $(BIN_DIR)/scan scanner/main.go
 
 ##@ Static Analysis Targets
 static: fmt vet lint ## Run static code analysis
@@ -64,18 +64,18 @@ docker: docker-build docker-push  ## Build all docker images and pushes them to 
 docker-build: docker-hrm docker-ui ## Build docker images
 
 docker-hrm:
-	docker buildx build --platform linux/${TARGETARCH} --load  . -f heartrate-monitor/Dockerfile -t ${HRM_IMG}
+	docker buildx build --platform $(GOOS)/$(GOARCH) --load  . -f heartrate-monitor/Dockerfile -t $(HRM_IMG)
 
 docker-ui:
-	docker buildx build --platform linux/${TARGETARCH} --load  . -f heartrate-ui/Dockerfile -t ${UI_IMG}
+	docker buildx build --platform $(GOOS)/$(GOARCH) --load  . -f heartrate-ui/Dockerfile -t $(UI_IMG)
 
 docker-push: ## Push docker images to container registry
-	docker push ${HRM_IMG}
-	docker push ${UI_IMG}
+	docker push $(HRM_IMG)
+	docker push $(UI_IMG)
 
 docker-rmi:  ## Remove docker image from local docker engine
-	docker rmi -f ${HRM_IMG}
-	docker rmi -f ${UI_IMG}
+	docker rmi -f $(HRM_IMG)
+	docker rmi -f $(UI_IMG)
 
 # binaries
 golangci-lint: bin-dir

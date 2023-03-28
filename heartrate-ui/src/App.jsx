@@ -15,7 +15,7 @@ import { Line } from 'react-chartjs-2'
 import './App.css'
 import spectroLogo from './assets/logo_landscape_for_dark.png'
 
-const API_URL = import.meta.env.VITE_API_BASE_URL
+const API_URL = window.VITE_API_BASE_URL
 
 ChartJS.register(
   CategoryScale,

@@ -85,7 +85,7 @@ func init() {
 
 func main() {
 
-	http.HandleFunc("/connect", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/hrm/connect", func(w http.ResponseWriter, r *http.Request) {
 		setHeaders(&w)
 		reset()
 
@@ -101,7 +101,7 @@ func main() {
 		}
 	})
 
-	http.HandleFunc("/baseline", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/hrm/baseline", func(w http.ResponseWriter, r *http.Request) {
 		setHeaders(&w)
 
 		if err := recordBaseline(); err != nil {
@@ -117,7 +117,7 @@ func main() {
 		}
 	})
 
-	http.HandleFunc("/challenge", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/hrm/challenge", func(w http.ResponseWriter, r *http.Request) {
 		setHeaders(&w)
 
 		var err error
@@ -133,7 +133,7 @@ func main() {
 		}
 	})
 
-	http.HandleFunc("/disconnect", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/hrm/disconnect", func(w http.ResponseWriter, r *http.Request) {
 		setHeaders(&w)
 		err := disconnect()
 		<-recording
@@ -152,14 +152,14 @@ func main() {
 		}
 	})
 
-	http.HandleFunc("/heart-rate-data-baseline", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/hrm/heart-rate-data-baseline", func(w http.ResponseWriter, r *http.Request) {
 		setHeaders(&w)
 		if err := json.NewEncoder(w).Encode(baselineValues); err != nil {
 			panic(err)
 		}
 	})
 
-	http.HandleFunc("/heart-rate-data-challenge", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/hrm/heart-rate-data-challenge", func(w http.ResponseWriter, r *http.Request) {
 		setHeaders(&w)
 		if err := json.NewEncoder(w).Encode(challengeValues); err != nil {
 			panic(err)
