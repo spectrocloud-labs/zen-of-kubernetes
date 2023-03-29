@@ -1,46 +1,5 @@
-#root {
-  /* max-width: 1280px; */
-  /* padding: 2rem; */
-  margin-top: 2%;
-  margin-left: 6%;
-  margin-right: 6%;
-  text-align: center;
-}
-
 .logo {
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.title {
-  margin-top: 1%;
-  margin-bottom: 1%;
-}
-
-.spectro {
-  color: #4983d4;
-  margin-top: 0%;
+  margin-top: 20px;
 }
 
 .hrm {
@@ -56,34 +15,33 @@ td {
   padding: 10px 0;
 }
 
-.loader {
-  margin-right: auto;
-  margin-left: auto;
-  width: max-content;
-}
-
-#connected, #deltaNegative {
+#connected,
+#deltaNegative {
   color: green;
-  font-weight: bold
+  font-weight: bold;
 }
 
-#error, #deltaPositive {
+#error,
+#deltaPositive {
   color: red;
-  font-weight: bold
+  font-weight: bold;
 }
 
 #recording {
   color: #4983d4;
-  font-weight: bold
+  font-weight: bold;
+}
+
+.line {
+  max-height: 400px;
+  margin: 0 50px;
 }
 
 .line canvas {
   border: 2px solid black;
-  height: 20vw !important;
-  width: 100vw !important;
   max-width: 100%;
   padding-bottom: 0.5em;
-  background: rgb(255, 255, 255);
+  border: none;
 }
 
 .card {
@@ -98,11 +56,71 @@ td {
 
 .pii {
   margin-top: 3%;
-  margin-bottom: 60%;
   max-width: 100%;
   padding: 0em;
   text-align: center;
 }
 .pii bold {
   font-weight: bold;
+}
+
+.App canvas {
+  width: 100vw;
+  height: 100vh;
+}
+
+#root {
+  width: 100%;
+}
+
+.App {
+  text-align: center;
+}
+
+.game-wrap {
+  overflow: hidden;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+.banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  height: 100px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+}
+
+.banner .line {
+  max-height: 100%;
+  margin: 0;
+}
+
+.stats {
+  font-size: 10px;
+  text-align: left;
+  margin: 0 10px;
+  text-shadow: 1px 1px 3px black;
+}
+
+.stats dd {
+  margin: 0;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.banner button {
+  margin: 10px;
+  background-color: #fff;
+  color: #555;
+}
+
+.banner .line canvas {
+  background-color: transparent;
+  border: none;
 }

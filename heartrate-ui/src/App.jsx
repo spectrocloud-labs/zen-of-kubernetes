@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { React, useState } from 'react'
 import { trackPromise, usePromiseTracker } from 'react-promise-tracker'
 import { ThreeDots } from 'react-loader-spinner'
@@ -14,6 +15,7 @@ import {
 import { Line } from 'react-chartjs-2'
 import './App.css'
 import spectroLogo from './assets/logo_landscape_for_dark.png'
+import Game from './components/Game'
 
 ChartJS.register(
   CategoryScale,
@@ -55,12 +57,17 @@ export const chartOptions = {
     y: {
       display: true,
       beginAtZero: false,
+      grid: {
+        color: 'rgba(255, 255, 240, 0.2)'
+      },
+      border: {
+        color: 'rgba(255, 255, 240, 0.2)'
+      },
       ticks: {
         stepSize: 1,
-        color: 'rgb(255, 0, 50)',
+        color: 'rgb(255, 255, 240)',
         font: {
-          size: 16,
-          weight: 'bold'
+          size: 16
         }
       },
       min: 50,
@@ -84,6 +91,7 @@ function App () {
   const [result, setResult] = useState({ message: '', error: '' })
   const [dataBaseline, setDataBaseline] = useState([])
   const [dataChallenge, setDataChallenge] = useState([])
+  const [step, setStep] = useState('home')
 
   const baselineChartData = {
     labels: getLabels(),
@@ -91,14 +99,14 @@ function App () {
       {
         label: 'Baseline',
         data: dataBaseline,
-        borderColor: 'rgb(73, 131, 212)',
-        backgroundColor: 'rgb(73, 131, 212)'
+        borderColor: 'rgba(73, 131, 212, 0.4)'
+        // backgroundColor: 'rgba(73, 131, 212, 0.3)'
       },
       {
         label: 'Challenge',
         data: dataChallenge,
-        borderColor: 'rgb(255, 0, 50)',
-        backgroundColor: 'rgb(255, 0, 50)'
+        borderColor: 'rgba(255, 0, 50, 0.4)'
+        // backgroundColor: 'rgba(255, 0, 50, 0.3)'
       }
     ]
   }
@@ -108,90 +116,116 @@ function App () {
     return Array.from(Array(len).keys())
   }
 
-  return (
-    <div className="App">
+  let content = (
+    <>
       <div>
         <a href="https://spectrocloud.com" target="_blank" rel="noreferrer">
-          <img src={spectroLogo} className="logo" alt="Spectro logo"/>
+          <img src={spectroLogo} className="logo" alt="Spectro logo" />
         </a>
-        <h1 className="title">Zen of Kubernetes</h1>
-        <h2 className="spectro">Heart Rate Challenge</h2>
+        <h1 className="title">Zen of Kubernetes - Heart Rate Challenge</h1>
       </div>
       <div className="hrm">
         <table>
           <tbody>
             <tr>
               <th>Baseline</th>
-              <th>Max</th>
-              <th>Delta</th>
             </tr>
             <tr>
               <td>{baseline}</td>
-              <td>{max}</td>
-              <Delta/>
             </tr>
           </tbody>
         </table>
       </div>
       <div className="loader">
-        <LoadingIndicator/>
+        <LoadingIndicator />
       </div>
       <div className="connected">
-        <Connected/>
+        <Connected />
       </div>
       <div className="recording">
-        <Recording/>
+        <Recording />
       </div>
       <div className="error">
-        <Error/>
+        <Error />
       </div>
       <div className="line">
         <Line options={chartOptions} data={baselineChartData} />
       </div>
       <div className="card">
-        <button onClick={connect}>
-          Connect
-        </button>
-        <button onClick={getBaseline}>
-          Baseline
-        </button>
-        <button onClick={startChallenge}>
-          Start Challenge
-        </button>
-        <button onClick={disconnect}>
-          Finish
-        </button>
+        <button onClick={connect}>Connect</button>
+        <button onClick={getBaseline}>Baseline</button>
+        <button onClick={startChallenge}>Start Challenge</button>
       </div>
-      <p className="pii"><bold>Disclaimer:</bold> Heart rate data is wiped each time the Finish button is clicked. No PII is persisted. Heart rate deltas are recorded for the purposes of the prize draw and will be destroyed once a winner is determined.</p>
-    </div>
+      <p className="pii">
+        <bold>Disclaimer:</bold> Heart rate data is wiped each time the Finish
+        button is clicked. No PII is persisted. Heart rate deltas are recorded
+        for the purposes of the prize draw and will be destroyed once a winner
+        is determined.
+      </p>
+    </>
   )
+  if (step === 'game') {
+    content = (
+      <>
+        <div className="banner">
+          <div className="line">
+            <Line
+              options={{
+                ...chartOptions,
+                plugins: {
+                  legend: { display: false },
+                  customCanvasBackgroundColor: {
+                    color: '#000'
+                  }
+                }
+              }}
+              data={baselineChartData}
+            />
+          </div>
+          <div className="stats">
+            <dt>Baseline</dt>
+            <dd>{baseline}</dd>
+            <dt>Max</dt>
+            <dd>{max}</dd>
+            <dt>Delta</dt>
+            <Delta as="dd" />
+          </div>
+          <button onClick={disconnect}>Finish</button>
+        </div>
+        <Game game="mario-brothers" />
+      </>
+    )
+  }
 
-  function Delta () {
+  return <div className="App">{content}</div>
+
+  function Delta ({ as = 'td' } = {}) {
+    const Component = as
     if (delta === 0) {
-      return <td>{delta}</td>
+      return <Component>{delta}</Component>
     } else if (delta < 0) {
-      return <td id='deltaNegative'>{delta}</td>
+      return <Component id="deltaNegative">{delta}</Component>
     }
-    return <td id='deltaPositive'>{delta}</td>
+    return <Component id="deltaPositive">{delta}</Component>
   }
 
   function Connected () {
     if (result.message === 'connected') {
-      return <p id='connected'>Connected</p>
+      return <p id="connected">Connected</p>
     }
     return null
   }
 
   function Recording () {
     if (recording) {
-      return <p id='recording'>Recording heart rate...</p>
+      return <p id="recording">Recording heart rate...</p>
     }
     return null
   }
 
   function Error () {
     if (result.error !== '') {
-      return <p id='error'>{result.error}</p>
+      return <p id="error">{result.error}</p>
     }
     return null
   }
@@ -206,6 +240,7 @@ function App () {
     disableChallengeInterval()
     setDataBaseline([])
     setDataChallenge([])
+    setStep('home')
   }
 
   function disableBaselineInterval () {
@@ -220,19 +255,22 @@ function App () {
     reset()
     trackPromise(
       fetch(window.VITE_API_BASE_URL + '/connect')
-        .then(result => result.json())
-        .then(d => setResult(d))
+        .then((result) => result.json())
+        .then((d) => setResult(d))
     )
   }
 
   function getBaseline () {
-    baselineIntervalId = setInterval(() => getHeartRateDataBaseline(), window.REFRESH_INTERVAL_MS)
+    baselineIntervalId = setInterval(
+      () => getHeartRateDataBaseline(),
+      window.REFRESH_INTERVAL_MS
+    )
     setResult({ message: '', error: '' })
 
     trackPromise(
       fetch(window.VITE_API_BASE_URL + '/baseline')
-        .then(result => result.json())
-        .then(d => {
+        .then((result) => result.json())
+        .then((d) => {
           setBaseline(d.baseline)
           setMax(d.max)
           setDelta(d.delta)
@@ -243,13 +281,17 @@ function App () {
 
   function startChallenge () {
     disableBaselineInterval()
-    challengeIntervalId = setInterval(() => getHeartRateDataChallenge(), window.REFRESH_INTERVAL_MS)
+    setStep('game')
+    challengeIntervalId = setInterval(
+      () => getHeartRateDataChallenge(),
+      window.REFRESH_INTERVAL_MS
+    )
     setResult({ message: '', error: '' })
 
     trackPromise(
       fetch(window.VITE_API_BASE_URL + '/challenge')
-        .then(result => result.json())
-        .then(d => {
+        .then((result) => result.json())
+        .then((d) => {
           setResult({ error: d.error })
           if (d.error === '') {
             setRecording(true)
@@ -261,11 +303,12 @@ function App () {
   function disconnect () {
     setRecording(false)
     disableChallengeInterval()
+    setStep('home')
 
     trackPromise(
       fetch(window.VITE_API_BASE_URL + '/disconnect')
-        .then(result => result.json())
-        .then(d => {
+        .then((result) => result.json())
+        .then((d) => {
           setBaseline(d.baseline)
           setMax(d.max)
           setDelta(d.delta)
@@ -276,8 +319,8 @@ function App () {
 
   function getHeartRateDataBaseline () {
     fetch(window.VITE_API_BASE_URL + '/heart-rate-data-baseline')
-      .then(result => result.json())
-      .then(d => {
+      .then((result) => result.json())
+      .then((d) => {
         if (d) {
           setDataBaseline(d)
         }
@@ -286,8 +329,8 @@ function App () {
 
   function getHeartRateDataChallenge () {
     fetch(window.VITE_API_BASE_URL + '/heart-rate-data-challenge')
-      .then(result => result.json())
-      .then(d => {
+      .then((result) => result.json())
+      .then((d) => {
         if (d) {
           setDataChallenge(d)
         }
