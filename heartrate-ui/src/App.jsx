@@ -32,6 +32,11 @@ export const chartOptions = {
     legend: {
       display: true,
       position: 'bottom',
+      // adds padding between plot and legend boxes
+      title: {
+        display: true,
+        text: ''
+      },
       labels: {
         boxWidth: 30,
         boxHeight: 15,
@@ -58,8 +63,8 @@ export const chartOptions = {
           weight: 'bold'
         }
       },
-      min: 60,
-      max: 170
+      min: 50,
+      max: 140
     }
   },
   title: {
@@ -157,7 +162,7 @@ function App () {
           Finish
         </button>
       </div>
-      <p className="pii"><bold>Disclaimer:</bold> Heart rate data is wiped each time the Finish button is clicked. No PII is persisted. Your name and delta will be recorded for the purposes of the prize draw and this information will be destroyed once a winner has been determined.</p>
+      <p className="pii"><bold>Disclaimer:</bold> Heart rate data is wiped each time the Finish button is clicked. No PII is persisted. Heart rate deltas are recorded for the purposes of the prize draw and will be destroyed once a winner is determined.</p>
     </div>
   )
 

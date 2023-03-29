@@ -1,7 +1,9 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  /* max-width: 1280px; */
+  /* padding: 2rem; */
+  margin-top: 2%;
+  margin-left: 6%;
+  margin-right: 6%;
   text-align: center;
 }
 
@@ -76,15 +78,16 @@ td {
 }
 
 .line canvas {
-  /* border: 1px dotted red; */
+  border: 2px solid black;
   height: 20vw !important;
-  width: 80vw !important;
+  width: 100vw !important;
   max-width: 100%;
   padding-bottom: 0.5em;
+  background: rgb(255, 255, 255);
 }
 
 .card {
-  margin-top: 1%;
+  margin-top: 2%;
 }
 .card button {
   margin-right: 20px;
