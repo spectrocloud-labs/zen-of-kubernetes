@@ -16,29 +16,33 @@ import (
 	"tinygo.org/x/bluetooth"
 )
 
+const (
+	alreadyConnected = "failed to connect... you must disconnect first"
+)
+
 var (
 	level zerolog.Level
 	log   logr.Logger
 
-	device                                 *bluetooth.Device
-	scanResult                             *bluetooth.ScanResult
-	heartRateCharacteristic                *bluetooth.DeviceCharacteristic
-	deviceAddress                          string
-	baseline, baselineCount, delta, max    int
-	baselineSeconds                        int64
-	baselineValues, challengeValues        HeartRateSlice
-	recording                              = make(chan bool, 1)
-	baselineEstablished, isChallengeActive bool
-	lastEvent                              time.Time
-
+	// bluetooth
 	adapter                     = bluetooth.DefaultAdapter
 	heartRateServiceUUID        = bluetooth.ServiceUUIDHeartRate
 	heartRateCharacteristicUUID = bluetooth.CharacteristicUUIDHeartRateMeasurement
-)
+	device                      *bluetooth.Device
+	scanResult                  *bluetooth.ScanResult
+	heartRateCharacteristic     *bluetooth.DeviceCharacteristic
+	deviceAddress               string
 
-const (
-	alreadyConnected = "failed to connect... you must disconnect first"
-	sampleRate       = 1 * time.Second
+	// data/control
+	baseline, baselineCount, delta, max    int
+	baselineValues, challengeValues        HeartRateSlice
+	recording                              = make(chan bool, 1)
+	baselineEstablished, isChallengeActive bool
+
+	// sampling
+	baselineSeconds int64
+	sampleRateMs    int64
+	lastEvent       time.Time
 )
 
 type HeartRateSlice []uint8
@@ -61,8 +65,6 @@ type Response struct {
 	Error    string `json:"error"`
 }
 
-// device address: 48a44b18-555a-e689-8140-f16dc6fdd3d6
-
 func init() {
 	if len(os.Args) < 2 {
 		fmt.Println("usage: hrm [address] [log-level]")
@@ -84,12 +86,22 @@ func init() {
 	log = zerologr.New(&zl)
 	log.V(0).Info("hrm", "address", deviceAddress, "logLevel", level)
 
+	var err error
 	baselineSecondsStr := os.Getenv("BASELINE_SECONDS")
 	if baselineSecondsStr == "" {
 		baselineSeconds = 5
 	} else {
-		var err error
 		baselineSeconds, err = strconv.ParseInt(baselineSecondsStr, 10, 64)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	sampleRateMsStr := os.Getenv("SAMPLE_RATE_MS")
+	if sampleRateMsStr == "" {
+		sampleRateMs = 1000
+	} else {
+		sampleRateMs, err = strconv.ParseInt(sampleRateMsStr, 10, 64)
 		if err != nil {
 			panic(err)
 		}
@@ -116,6 +128,7 @@ func main() {
 
 	http.HandleFunc("/hrm/baseline", func(w http.ResponseWriter, r *http.Request) {
 		setHeaders(&w)
+		resetBaseline()
 
 		if err := recordBaseline(); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -184,10 +197,18 @@ func main() {
 }
 
 func reset() {
-	baseline, baselineCount, delta, max = 0, 0, 0, 0
-	baselineValues, challengeValues = make(HeartRateSlice, 0), make(HeartRateSlice, 0)
-	baselineEstablished, isChallengeActive = false, false
+	resetBaseline()
+	delta, max = 0, 0
+	challengeValues = make(HeartRateSlice, 0)
+	isChallengeActive = false
 	log.V(0).Info("reset all data")
+}
+
+func resetBaseline() {
+	baseline, baselineCount = 0, 0
+	baselineValues = make(HeartRateSlice, 0)
+	baselineEstablished = false
+	log.V(0).Info("reset baseline data")
 }
 
 func setHeaders(w *http.ResponseWriter) {
@@ -336,7 +357,7 @@ func heartRateCallback(buf []byte) {
 	v := uint8(buf[1])
 	// when using BLE, there's no need to throttle the sensor events,
 	// but they come in too hot on the NUC, which uses Bluetooth v2.2
-	if time.Since(lastEvent) < sampleRate {
+	if time.Since(lastEvent) < time.Duration(sampleRateMs)*time.Millisecond {
 		log.V(0).Info("disregarding data point", "heartRate", v)
 		return
 	}
