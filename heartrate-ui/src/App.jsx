@@ -45,8 +45,8 @@ export const chartOptions = {
         boxHeight: 15,
         color: 'rgb(73, 131, 212)',
         font: {
-          size: 16,
-          weight: 'bold'
+          family: 'Poppins, system-ui, Avenir, Helvetica, Arial, sans-serif',
+          size: 17
         }
       }
     }
@@ -119,17 +119,25 @@ function App () {
   let content = (
     <>
       <div>
-        <div className="logos-wrap">
-          <a href="https://spectrocloud.com" target="_blank" rel="noreferrer">
-            <img src={spectroLogo} className="logo" alt="Spectro logo" />
-          </a>
-          <em>&times;</em>
-          <a href="https://intel.com">
-            <img src={intelLogo} className="intel-logo" alt="Spectro logo" />
-          </a>
-        </div>
-        <h1 className="title">Zen of Kubernetes</h1>
-        <h2 className="subtitle">Heart Rate Challenge</h2>
+        <table className="header">
+          <tbody>
+            <th>
+              <h1 className="title">Zen of Kubernetes</h1>
+              <h2 className="subtitle">Heart Rate Challenge</h2>
+            </th>
+            <th className="logos">
+              <div className="logos-wrap">
+                <a href="https://spectrocloud.com" target="_blank" rel="noreferrer">
+                  <img src={spectroLogo} className="logo" alt="Spectro logo" />
+                </a>
+                <em>&times;</em>
+                <a href="https://intel.com">
+                  <img src={intelLogo} className="intel-logo" alt="Spectro logo" />
+                </a>
+              </div>
+            </th>
+          </tbody>
+        </table>
       </div>
       <div className="hrm">
         <table>

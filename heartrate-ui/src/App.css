@@ -1,10 +1,36 @@
-h1, h2 {
-  letter-spacing: -.02em;
+.header {
+  max-width: 100%;
+  margin-left: 15%;
 }
 
 .title {
   color: rgb(66, 136, 228);
   margin: 20px;
+}
+
+h1, h2 {
+  letter-spacing: -.02em;
+}
+
+.intel-logo {
+  max-height: 51px;
+}
+
+.logos {
+  padding-left: 70%;
+}
+.logos-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logos-wrap em {
+  font-style: normal;
+  margin: 0 20px;
+  font-size: 80px;
+  font-weight: 100;
+  opacity: 0.2;
 }
 
 .hrm {
@@ -128,22 +154,4 @@ td {
 .banner .line canvas {
   background-color: transparent;
   border: none;
-}
-
-.intel-logo {
-  max-height: 51px;
-}
-
-.logos-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.logos-wrap em {
-  font-style: normal;
-  margin: 0 20px;
-  font-size: 80px;
-  font-weight: 100;
-  opacity: 0.2;
 }
