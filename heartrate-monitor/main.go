@@ -322,11 +322,15 @@ func challenge() error {
 
 	// determine maximum heart rate
 	max = 0
+	for _, v := range baselineValues {
+		if int(v) > max {
+			max = int(v)
+		}
+	}
 	for _, v := range challengeValues {
 		if int(v) > max {
 			max = int(v)
 		}
-		log.V(1).Info("calculating", "max", max, "v", v)
 	}
 	log.V(0).Info("maximum", "heartRate", max)
 
