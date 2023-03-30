@@ -15,6 +15,7 @@ import {
 import { Line } from 'react-chartjs-2'
 import './App.css'
 import spectroLogo from './assets/logo_landscape_for_dark.png'
+import intelLogo from './assets/intel-logo-2022.png'
 import Game from './components/Game'
 
 ChartJS.register(
@@ -118,9 +119,15 @@ function App () {
   let content = (
     <>
       <div>
-        <a href="https://spectrocloud.com" target="_blank" rel="noreferrer">
-          <img src={spectroLogo} className="logo" alt="Spectro logo" />
-        </a>
+        <div className="logos-wrap">
+          <a href="https://spectrocloud.com" target="_blank" rel="noreferrer">
+            <img src={spectroLogo} className="logo" alt="Spectro logo" />
+          </a>
+          <em>&times;</em>
+          <a href="https://intel.com">
+            <img src={intelLogo} className="intel-logo" alt="Spectro logo" />
+          </a>
+        </div>
         <h1 className="title">Zen of Kubernetes</h1>
         <h2 className="subtitle">Heart Rate Challenge</h2>
       </div>
@@ -158,7 +165,7 @@ function App () {
         <button onClick={startChallenge}>Start Challenge</button>
       </div>
       <p className="pii">
-        <bold>Disclaimer:</bold> Heart rate data is wiped each time the Finish
+        <strong>Disclaimer:</strong> Heart rate data is wiped each time the Finish
         button is clicked. No PII is persisted. Heart rate deltas are recorded
         for the purposes of the prize draw and will be destroyed once a winner
         is determined.

@@ -1,9 +1,14 @@
+h1, h2 {
+  letter-spacing: -.02em;
+}
+
 .logo {
   margin-top: 20px;
 }
 
 .title {
-  color: #4983d4;
+  color: rgb(66, 136, 228);
+  margin: 20px;
 }
 
 .hrm {
@@ -60,13 +65,12 @@ td {
 }
 
 .pii {
-  margin-top: 3%;
-  max-width: 100%;
+  margin: 40px auto;
+  max-width: 80%;
   padding: 0em;
   text-align: center;
-}
-.pii bold {
-  font-weight: bold;
+  opacity: 0.8;
+  font-size: 14px;
 }
 
 .App canvas {
@@ -128,4 +132,23 @@ td {
 .banner .line canvas {
   background-color: transparent;
   border: none;
+}
+
+.intel-logo {
+  margin-top: 20px;
+  max-height: 51px;
+}
+
+.logos-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logos-wrap em {
+  font-style: normal;
+  margin: 0 20px;
+  font-size: 80px;
+  font-weight: 100;
+  opacity: 0.2;
 }
