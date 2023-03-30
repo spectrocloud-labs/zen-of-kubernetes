@@ -2,10 +2,6 @@ h1, h2 {
   letter-spacing: -.02em;
 }
 
-.logo {
-  margin-top: 20px;
-}
-
 .title {
   color: rgb(66, 136, 228);
   margin: 20px;
@@ -135,7 +131,6 @@ td {
 }
 
 .intel-logo {
-  margin-top: 20px;
   max-height: 51px;
 }
 
