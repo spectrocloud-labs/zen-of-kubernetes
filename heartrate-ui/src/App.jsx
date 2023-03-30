@@ -176,7 +176,7 @@ function App () {
     const curMax = Math.max(...dataBaseline, ...dataChallenge)
     if (curMax > max) {
       setMax(curMax)
-      setDelta(max - baseline)
+      setDelta(curMax - baseline)
     }
 
     content = (
