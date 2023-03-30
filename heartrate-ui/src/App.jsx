@@ -85,7 +85,6 @@ let challengeIntervalId
 
 function App () {
   const [baseline, setBaseline] = useState(0)
-  const [recording, setRecording] = useState(false)
   const [delta, setDelta] = useState(0)
   const [max, setMax] = useState(0)
   const [result, setResult] = useState({ message: '', error: '' })
@@ -122,16 +121,21 @@ function App () {
         <a href="https://spectrocloud.com" target="_blank" rel="noreferrer">
           <img src={spectroLogo} className="logo" alt="Spectro logo" />
         </a>
-        <h1 className="title">Zen of Kubernetes - Heart Rate Challenge</h1>
+        <h1 className="title">Zen of Kubernetes</h1>
+        <h2 className="subtitle">Heart Rate Challenge</h2>
       </div>
       <div className="hrm">
         <table>
           <tbody>
             <tr>
               <th>Baseline</th>
+              <th>Max</th>
+              <th>Delta</th>
             </tr>
             <tr>
               <td>{baseline}</td>
+              <td>{max}</td>
+              <Delta />
             </tr>
           </tbody>
         </table>
@@ -141,9 +145,6 @@ function App () {
       </div>
       <div className="connected">
         <Connected />
-      </div>
-      <div className="recording">
-        <Recording />
       </div>
       <div className="error">
         <Error />
@@ -165,6 +166,12 @@ function App () {
     </>
   )
   if (step === 'game') {
+    const curMax = Math.max(...dataBaseline, ...dataChallenge)
+    if (curMax > max) {
+      setMax(curMax)
+      setDelta(max - baseline)
+    }
+
     content = (
       <>
         <div className="banner">
@@ -188,7 +195,7 @@ function App () {
             <dt>Max</dt>
             <dd>{max}</dd>
             <dt>Delta</dt>
-            <Delta as="dd" />
+            <dd>{delta}</dd>
           </div>
           <button onClick={disconnect}>Finish</button>
         </div>
@@ -216,13 +223,6 @@ function App () {
     return null
   }
 
-  function Recording () {
-    if (recording) {
-      return <p id="recording">Recording heart rate...</p>
-    }
-    return null
-  }
-
   function Error () {
     if (result.error !== '') {
       return <p id="error">{result.error}</p>
@@ -232,7 +232,6 @@ function App () {
 
   function reset () {
     setResult({ message: '', error: '' })
-    setRecording(false)
     setBaseline(0)
     setMax(0)
     setDelta(0)
@@ -293,15 +292,11 @@ function App () {
         .then((result) => result.json())
         .then((d) => {
           setResult({ error: d.error })
-          if (d.error === '') {
-            setRecording(true)
-          }
         })
     )
   }
 
   function disconnect () {
-    setRecording(false)
     disableChallengeInterval()
     setStep('home')
 

@@ -2,6 +2,10 @@
   margin-top: 20px;
 }
 
+.title {
+  color: #4983d4;
+}
+
 .hrm {
   margin-left: auto;
   margin-right: auto;
@@ -15,6 +19,12 @@ td {
   padding: 10px 0;
 }
 
+.loader {
+  margin-right: auto;
+  margin-left: auto;
+  width: max-content;
+}
+
 #connected,
 #deltaNegative {
   color: green;
@@ -24,11 +34,6 @@ td {
 #error,
 #deltaPositive {
   color: red;
-  font-weight: bold;
-}
-
-#recording {
-  color: #4983d4;
   font-weight: bold;
 }
 
