@@ -20,7 +20,7 @@ export default function Game ({ game }) {
     }
     const gameRunner = Dos(canvasRef.current, {})
     gameRunner.ready((fs, main) => {
-      fs.extract(`/game/${game}` + '.zip').then(() => {
+      fs.extract(`/${game}` + '.zip').then(() => {
         main(['-c', gamePaths[game]])
       })
     })
