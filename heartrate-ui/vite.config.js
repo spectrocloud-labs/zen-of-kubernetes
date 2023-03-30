@@ -5,6 +5,11 @@ export default (configEnv) => {
   return defineConfig({
     plugins: [
       react()
-    ]
+    ],
+    build: {
+      rollupOptions: {
+        external: ['/js-dos.js']
+      }
+    }
   })
 }
