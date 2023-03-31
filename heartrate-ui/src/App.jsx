@@ -41,13 +41,15 @@ export const chartOptions = {
         text: ''
       },
       labels: {
-        boxWidth: 30,
-        boxHeight: 15,
-        color: 'rgb(73, 131, 212)',
+        boxWidth: 32,
+        boxHeight: 14,
+        color: 'rgb(215, 218, 229)',
         font: {
           family: 'Poppins, system-ui, Avenir, Helvetica, Arial, sans-serif',
           size: 17
-        }
+        },
+        useBorderRadius: true,
+        borderRadius: 2
       }
     }
   },
@@ -59,14 +61,14 @@ export const chartOptions = {
       display: true,
       beginAtZero: false,
       grid: {
-        color: 'rgba(255, 255, 240, 0.2)'
+        color: 'rgb(75, 83, 114)'
       },
       border: {
         color: 'rgba(255, 255, 240, 0.2)'
       },
       ticks: {
         stepSize: 1,
-        color: 'rgb(255, 255, 240)',
+        color: 'rgb(215, 218, 229)',
         font: {
           size: 16
         }
@@ -99,14 +101,16 @@ function App () {
       {
         label: 'Baseline',
         data: dataBaseline,
-        borderColor: 'rgba(73, 131, 212, 0.4)'
-        // backgroundColor: 'rgba(73, 131, 212, 0.3)'
+        borderColor: 'rgb(53, 117, 207)',
+        pointBorderColor: 'rgb(98, 154, 238)',
+        pointBorderWidth: '2'
       },
       {
         label: 'Challenge',
         data: dataChallenge,
-        borderColor: 'rgba(255, 0, 50, 0.4)'
-        // backgroundColor: 'rgba(255, 0, 50, 0.3)'
+        borderColor: 'rgb(181, 74, 161)',
+        pointBorderColor: 'rgb(205, 106, 187)',
+        pointBorderWidth: '2'
       }
     ]
   }
@@ -122,7 +126,7 @@ function App () {
         <table className="header">
           <tbody>
             <th>
-              <h1 className="title">Zen of Kubernetes</h1>
+              <h1 className="title">Zen of <e>Kubernetes</e></h1>
               <h2 className="subtitle">Heart Rate Challenge</h2>
             </th>
             <th className="logos">
@@ -130,7 +134,7 @@ function App () {
                 <a href="https://spectrocloud.com" target="_blank" rel="noreferrer">
                   <img src={spectroLogo} className="logo" alt="Spectro logo" />
                 </a>
-                <em>&times;</em>
+                <em>|</em>
                 <a href="https://intel.com">
                   <img src={intelLogo} className="intel-logo" alt="Spectro logo" />
                 </a>
@@ -148,27 +152,23 @@ function App () {
               <th>Delta</th>
             </tr>
             <tr>
-              <td>{baseline}</td>
-              <td>{max}</td>
+              <td id="baselineValue">{baseline}</td>
+              <td id="maxValue">{max}</td>
               <Delta />
             </tr>
           </tbody>
         </table>
       </div>
       <div className="loader">
-        <LoadingIndicator />
-      </div>
-      <div className="connected">
         <Connected />
-      </div>
-      <div className="error">
         <Error />
+        <LoadingIndicator />
       </div>
       <div className="line">
         <Line options={chartOptions} data={baselineChartData} />
       </div>
       <div className="card">
-        <button onClick={connect}>Connect</button>
+        <button id="connectButton" onClick={connect}>Connect</button>
         <button onClick={getBaseline}>Baseline</button>
         <button onClick={startChallenge}>Start Challenge</button>
       </div>
@@ -224,7 +224,7 @@ function App () {
   function Delta ({ as = 'td' } = {}) {
     const Component = as
     if (delta === 0) {
-      return <Component>{delta}</Component>
+      return <Component id="deltaNeutral">{delta}</Component>
     } else if (delta < 0) {
       return <Component id="deltaNegative">{delta}</Component>
     }
@@ -275,6 +275,10 @@ function App () {
   }
 
   function getBaseline () {
+    // prevent accumulation of baseline intervals if "baseline"
+    // re-clicked before clicking "start challenge"
+    disableBaselineInterval()
+
     baselineIntervalId = setInterval(
       () => getHeartRateDataBaseline(),
       window.REFRESH_INTERVAL_MS
@@ -312,6 +316,11 @@ function App () {
   }
 
   function disconnect () {
+    // zero out results for anticipation until disconnect loader resolves
+    setBaseline(0)
+    setMax(0)
+    setDelta(0)
+
     disableChallengeInterval()
     setStep('home')
 
@@ -351,7 +360,7 @@ function App () {
 export const LoadingIndicator = () => {
   const { promiseInProgress } = usePromiseTracker()
   if (promiseInProgress) {
-    return <ThreeDots color="#2BAD60" height="100" width="100" />
+    return <ThreeDots color="#60BEA9" height="50" width="60" textAlign="center" />
   }
   return null
 }

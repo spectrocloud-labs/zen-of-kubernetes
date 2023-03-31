@@ -4,12 +4,17 @@
 }
 
 .title {
-  color: rgb(66, 136, 228);
-  margin: 20px;
+  color: #FFFFFF;
+}
+.title e {
+  color: #3575CF;
 }
 
 h1, h2 {
   letter-spacing: -.02em;
+}
+h2 {
+  color: #B8BDD1;
 }
 
 .intel-logo {
@@ -24,10 +29,9 @@ h1, h2 {
   align-items: center;
   justify-content: center;
 }
-
 .logos-wrap em {
   font-style: normal;
-  margin: 0 20px;
+  margin: 0 80px;
   font-size: 80px;
   font-weight: 100;
   opacity: 0.2;
@@ -37,30 +41,49 @@ h1, h2 {
   margin-left: auto;
   margin-right: auto;
   width: max-content;
+  color: #B8BDD1;
 }
 .hrm table {
   border-collapse: separate;
   border-spacing: 30px 0;
 }
-td {
-  padding: 10px 0;
+.hrm th {
+  font-size: 20px;
+}
+.hrm td {
+  font-size: 32px;
 }
 
 .loader {
   margin-right: auto;
   margin-left: auto;
+  height: 40px;
   width: max-content;
 }
 
-#connected,
-#deltaNegative {
-  color: green;
+#connected {
+  color: #60BEA9;
+  font-size: 20px;
   font-weight: bold;
 }
 
+#deltaNegative {
+  color: #60BEA9;
+  font-weight: bold;
+}
+
+#baselineValue {
+  color: #3575CF;
+}
+
+#maxValue {
+  color: #FFFFFF;
+}
+
 #error,
+#deltaNeutral,
 #deltaPositive {
-  color: red;
+  color: #CD6ABB;
   font-weight: bold;
 }
 
@@ -70,7 +93,6 @@ td {
 }
 
 .line canvas {
-  border: 2px solid black;
   max-width: 100%;
   padding-bottom: 0.5em;
   border: none;
@@ -78,21 +100,32 @@ td {
 
 .card {
   margin-top: 2%;
+  color: #FFFFFF
 }
 .card button {
   margin-right: 20px;
   margin-bottom: 0%;
   border-width: 2px;
-  border-color: #4983d4;
+  border-color: #D7DAE5;
+}
+.card button:hover {
+  background-color: #2858A9;
+  border-color: #2858A9;
+}
+
+#connectButton {
+  background-color: #3575CF;
+  border-color: #3575CF;
 }
 
 .pii {
   margin: 40px auto;
-  max-width: 80%;
+  max-width: 50%;
   padding: 0em;
   text-align: center;
   opacity: 0.8;
   font-size: 14px;
+  color: #99A0BC;
 }
 
 .App canvas {
