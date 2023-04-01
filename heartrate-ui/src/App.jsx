@@ -67,7 +67,8 @@ export const chartOptions = {
         color: 'rgba(255, 255, 240, 0.2)'
       },
       ticks: {
-        stepSize: 1,
+        autoSkip: false,
+        stepSize: 5,
         color: 'rgb(215, 218, 229)',
         font: {
           size: 16
@@ -198,6 +199,20 @@ function App () {
                   legend: { display: false },
                   customCanvasBackgroundColor: {
                     color: '#000'
+                  }
+                },
+                scales: {
+                  x: {
+                    display: false
+                  },
+                  y: {
+                    ticks: {
+                      color: 'rgb(215, 218, 229)',
+                      font: {
+                        size: 12,
+                        weight: 'bold'
+                      }
+                    }
                   }
                 }
               }}
