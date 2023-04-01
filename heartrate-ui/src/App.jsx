@@ -337,6 +337,10 @@ function App () {
     setDelta(0)
 
     disableChallengeInterval()
+    // shift challenge data to after baseline
+    const buffer = Array(dataBaseline.length - 1).fill(null)
+    const d = buffer.concat(dataChallenge)
+    setDataChallenge(d)
     setStep('home')
 
     trackPromise(
