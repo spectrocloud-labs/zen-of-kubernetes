@@ -338,9 +338,11 @@ function App () {
 
     disableChallengeInterval()
     // shift challenge data to after baseline
-    const buffer = Array(dataBaseline.length - 1).fill(null)
-    const d = buffer.concat(dataChallenge)
-    setDataChallenge(d)
+    if (dataBaseline.length > 0) {
+      const buffer = Array(dataBaseline.length - 1).fill(null)
+      const d = buffer.concat(dataChallenge)
+      setDataChallenge(d)
+    }
     setStep('home')
 
     trackPromise(
