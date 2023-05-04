@@ -99,7 +99,7 @@ h2 {
 }
 
 .card {
-  margin-top: 2%;
+  margin-top: 1%;
   color: #FFFFFF
 }
 .card button {
@@ -113,13 +113,28 @@ h2 {
   border-color: #2858A9;
 }
 
-#connectButton {
+#baselineButton {
   background-color: #3575CF;
   border-color: #3575CF;
 }
 
+.connect {
+  margin-top: 1%;
+  color: #FFFFFF
+}
+.connect button {
+  margin-bottom: 0%;
+  border-width: 1px;
+  border-color: #2858A9;
+  font-size: smaller;
+}
+.connect button:hover {
+  background-color: #2858A9;
+  border-color: #2858A9;
+}
+
 .pii {
-  margin: 40px auto;
+  margin: 20px auto;
   max-width: 50%;
   padding: 0em;
   text-align: center;

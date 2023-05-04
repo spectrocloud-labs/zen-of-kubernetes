@@ -169,9 +169,11 @@ function App () {
         <Line options={chartOptions} data={baselineChartData} />
       </div>
       <div className="card">
-        <button id="connectButton" onClick={connect}>Connect</button>
-        <button onClick={getBaseline}>Baseline</button>
+        <button id="baselineButton" onClick={getBaseline}>Baseline</button>
         <button onClick={startChallenge}>Start Challenge</button>
+      </div>
+      <div className="connect">
+        <button id="connectButton" onClick={connect}>Connect</button>
       </div>
       <p className="pii">
         <strong>Disclaimer:</strong> Heart rate data is wiped each time the Finish
@@ -290,6 +292,8 @@ function App () {
   }
 
   function getBaseline () {
+    reset()
+
     // prevent accumulation of baseline intervals if "baseline"
     // re-clicked before clicking "start challenge"
     disableBaselineInterval()
